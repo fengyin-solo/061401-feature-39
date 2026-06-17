@@ -2,13 +2,32 @@
 import { computed } from 'vue'
 import StatusPanel from '@/components/StatusPanel.vue'
 import ActionButtons from '@/components/ActionButtons.vue'
+import PriorityPanel from '@/components/PriorityPanel.vue'
 import EventLog from '@/components/EventLog.vue'
 import GameOverModal from '@/components/GameOverModal.vue'
 import { useGame } from '@/composables/useGame'
+import type { ActionType } from '@/types/game'
 
-const { state, highScore, canPerformAction, gatherWood, gatherStone, hunt, drink, restart } = useGame()
+const { state, highScore, canPerformAction, priorities, gatherWood, gatherStone, hunt, drink, restart } = useGame()
 
 const isNewRecord = computed(() => state.value.turn >= highScore.value && state.value.turn > 0)
+
+function handleSelectAction(action: ActionType) {
+  switch (action) {
+    case 'gatherWood':
+      gatherWood()
+      break
+    case 'gatherStone':
+      gatherStone()
+      break
+    case 'hunt':
+      hunt()
+      break
+    case 'drink':
+      drink()
+      break
+  }
+}
 </script>
 
 <template>
@@ -48,7 +67,12 @@ const isNewRecord = computed(() => state.value.turn >= highScore.value && state.
           />
         </div>
 
-        <div>
+        <div class="space-y-6">
+          <PriorityPanel
+            :priorities="priorities"
+            :disabled="state.isGameOver"
+            @select-action="handleSelectAction"
+          />
           <ActionButtons
             :can-gather-wood="canPerformAction('gatherWood')"
             :can-gather-stone="canPerformAction('gatherStone')"

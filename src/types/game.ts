@@ -38,3 +38,12 @@ export interface ActionEffect {
   wood?: number
   stone?: number
 }
+
+export interface PriorityItem {
+  action: ActionType
+  name: string
+  icon: string
+  score: number
+  reason: string
+  urgency: 'critical' | 'high' | 'medium' | 'low'
+}
